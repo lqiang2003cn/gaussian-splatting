@@ -20,9 +20,9 @@ parser.add_argument("--no_gpu", action='store_true')
 parser.add_argument("--skip_matching", action='store_true')
 parser.add_argument("--source_path", "-s", required=True, type=str)
 parser.add_argument("--camera", default="OPENCV", type=str)
-parser.add_argument("--colmap_executable", default="", type=str)
+parser.add_argument("--colmap_executable", default="/usr/bin/colmap", type=str)
 parser.add_argument("--resize", action="store_true")
-parser.add_argument("--magick_executable", default="", type=str)
+parser.add_argument("--magick_executable", default="/usr/bin/convert", type=str)
 args = parser.parse_args()
 colmap_command = '"{}"'.format(args.colmap_executable) if len(args.colmap_executable) > 0 else "colmap"
 magick_command = '"{}"'.format(args.magick_executable) if len(args.magick_executable) > 0 else "magick"
@@ -58,8 +58,9 @@ if not args.skip_matching:
     mapper_cmd = (colmap_command + " mapper \
         --database_path " + args.source_path + "/distorted/database.db \
         --image_path "  + args.source_path + "/input \
-        --output_path "  + args.source_path + "/distorted/sparse \
-        --Mapper.ba_global_function_tolerance=0.000001")
+        --export_path "  + args.source_path + "/distorted/sparse \
+        "
+    )
     exit_code = os.system(mapper_cmd)
     if exit_code != 0:
         logging.error(f"Mapper failed with code {exit_code}. Exiting.")
